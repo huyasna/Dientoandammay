@@ -1,7 +1,15 @@
 import React from "react";
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
+import TextField from '@mui/material/TextField';
+import { Autocomplete } from '@mui/material';
 
 export default function Header() {
+    const suggestions = ["a", "b", "c", "d"];
+
+    function handleChange() {
+        console.log("something changed");
+    }
+
     return (
         <header className="header">
             <div className="grid wide">
@@ -110,11 +118,10 @@ export default function Header() {
                     </div>
 
                     <input type="checkbox" hidden id="mobile-search-checkbox" className="header__search-checkbox" />
-                    <div className="header__search ">
+                    {/* <div className="header__search ">
                         <div className="header__search-input-wrap">
                             <input type="text" className="header__search-input" placeholder="Nhập để tìm kiếm phim" />
 
-                            {/*  Search history  */}
                             <div className="header__search-history">
                                 <h3 className="header__search-history-heading">Lịch sử tìm kiếm</h3>
                                 <ul className="header__search-history-list">
@@ -137,7 +144,17 @@ export default function Header() {
                             <i className="header__search-btn-icon fa-solid fa-magnifying-glass"></i>
                         </button>
 
-                    </div>
+                    </div> */}
+
+                    <Autocomplete
+                        disablePortal
+                        id="search box"
+                        options={suggestions}
+                        sx={{ width: 800 }}
+                        size="small"
+                        renderInput={(params) => <TextField {...params} label="Tìm kiếm" />}
+                        onChange={handleChange}
+                    />
                 </div>
             </div>
 
