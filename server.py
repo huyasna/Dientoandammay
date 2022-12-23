@@ -24,6 +24,33 @@ except:
 # titles = movies_metadata['title']
 
 
+# Get movies in home screen, Example:
+@app.route("/movies/home", methods=["GET"])
+def getMoviesInHome():
+    try:
+        dbResponse = list(db.movie_metadatas.find(
+            {}).sort("release_date", -1).limit(20))
+
+        if not dbResponse:
+          raise Exception("Not found movies!")
+
+        return Response(
+            response=json_util.dumps(dbResponse),
+            status=200,
+            mimetype="application/json"
+        )
+    except Exception as ex:
+        print("###############################################################")
+        print(ex)
+
+        return Response(
+            response=json.dumps(
+                {"message": "Get home movies failed"}),
+            status=500,
+            mimetype="application/json"
+        )
+
+
 # Get movie info by id, Example: localhost:80/movies?id=862
 @app.route("/movies", methods=["GET"])
 def getMovieById():
@@ -100,15 +127,40 @@ def getMovieRecommendations():
         )
 
 
-# Save user when sign up or first time login
+# Save user when sign up or first time login, Example: localhost:80/users
+# {
+#     "userName": "Third User",
+#     "email": "third_user@gmail.com",
+#     "password": "123123123"
+# }
 @app.route('/users', methods=['POST'])
 def saveUser():
     try:
-        user = request.json
-        dbResponse = db.users.insert_one(user)
+        data = request.json
+        userName = data['userName']
+        email = data['email']
+        password = data['password']
+        # if (userName is None or email is None or password is None):
+        #     return Response(
+        #         response=json_util.dumps(
+        #             {"message": "Not enough field value for user"}),
+        #         status=500,
+        #         mimetype="application/json")
+        # else:
+        existingUser = db.users.find({"email": email})
+
+        if (existingUser):
+            raise Exception("User already exits")
+
+        userLatest = list(db.users.find({}).sort("userId", -1).limit(1))[0]
+        dbResponse = db.users.insert_one({
+            "userName": userName,
+            "userId": userLatest["userId"]+1,
+            "email": email,
+            "password": password})
         return Response(
             response=json_util.dumps({"message": "User created successfully",
-                                 "id": f"{dbResponse.inserted_id}"}),
+                                      "id": f"{dbResponse.inserted_id}"}),
             status=200,
             mimetype="application/json"
         )
@@ -119,6 +171,46 @@ def saveUser():
         return Response(
             response=json.dumps(
                 {"message": "Create user failed"}),
+            status=500,
+            mimetype="application/json"
+        )
+
+
+# Get user data for login, Example localhost:80/users
+# {
+#     "email": "third_user@gmail.com",
+#     "password": "123123123"
+# }
+@app.route("/users", methods=["GET"])
+def getUser():
+    try:
+        date = request.json
+        email = request.json["email"]
+        password = request.json["password"]
+
+        existingUser = list(db.users.find({"email": email}))[0]
+
+        if (existingUser["password"] != password):
+            raise Exception("Password not match")
+
+        userId = existingUser["userId"]
+        userName = existingUser["userName"]
+
+        return Response(
+            response=json_util.dumps({"message": "Login successfully!",
+                                      "userName": f"{userName}",
+                                      "userId": f"{userId}"}),
+            status=200,
+            mimetype="application/json"
+        )
+
+    except Exception as ex:
+        print("##########################################")
+        print(ex)
+
+        return Response(
+            response=json.dumps(
+                {"message": "Login failed"}),
             status=500,
             mimetype="application/json"
         )
