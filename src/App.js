@@ -9,6 +9,8 @@ import {
   Routes,
   Route,
 } from "react-router-dom";
+import Register from './pages/Register';
+import Login from './pages/Login';
 
 
 export default function App() {
@@ -19,6 +21,8 @@ export default function App() {
       <Routes>
         <Route exact path="/" element={<Home />} />
         <Route path="/:movieId" element={<MovieDetail />} />
+        <Route path="/dang-ky" element={<Register />} />
+        <Route path="/dang-nhap" element={<Login />} />
       </Routes>
 
       <Footer />

@@ -2,6 +2,10 @@ import React from "react";
 import RecommendMovieCards from "../components/RecommendedMovieCards";
 
 export default function MovieDetail() {
+    function rateMovie(e) {
+        console.log(e.target.value);
+    }
+
     return (
         <div className="app">
 
@@ -40,7 +44,18 @@ export default function MovieDetail() {
                                     <li><strong>Status</strong>: Released </li>
                                     <li><strong>Vote Avarage</strong>: 7.7 </li>
                                     <li><strong>Vote Count</strong>: 5415</li>
-
+                                    <fieldset className="rating">
+                                        <input type="radio" id="star10" name="rating" value="10" onChange={rateMovie} /><label className="full" htmlFor="star10" title="10 stars"></label>
+                                        <input type="radio" id="star9" name="rating" value="9" onChange={rateMovie} /><label className="full" htmlFor="star9" title="9 stars"></label>
+                                        <input type="radio" id="star8" name="rating" value="8" onChange={rateMovie} /><label className="full" htmlFor="star8" title="8 stars"></label>
+                                        <input type="radio" id="star7" name="rating" value="7" onChange={rateMovie} /><label className="full" htmlFor="star7" title="7 stars"></label>
+                                        <input type="radio" id="star6" name="rating" value="6" onChange={rateMovie} /><label className="full" htmlFor="star6" title="6 star"></label>
+                                        <input type="radio" id="star5" name="rating" value="5" onChange={rateMovie} /><label className="full" htmlFor="star5" title="5 stars"></label>
+                                        <input type="radio" id="star4" name="rating" value="4" onChange={rateMovie} /><label className="full" htmlFor="star4" title="4 stars"></label>
+                                        <input type="radio" id="star3" name="rating" value="3" onChange={rateMovie} /><label className="full" htmlFor="star3" title="3 stars"></label>
+                                        <input type="radio" id="star2" name="rating" value="2" onChange={rateMovie} /><label className="full" htmlFor="star2" title="2 stars"></label>
+                                        <input type="radio" id="star1" name="rating" value="1" onChange={rateMovie} /><label className="full" htmlFor="star1" title="1 star"></label>
+                                    </fieldset>
                                 </ul>
                             </div>
                             <div className="portfolio-overview">

@@ -2,7 +2,6 @@ import React from "react";
 import { Link } from 'react-router-dom'
 
 export default function MovieCard(props) {
-    console.log(props);
     return (
         <div className="col l-2-4 m-4 c-6 ">
             <Link className="home-movie-item" to={`/${props.movie}`}>

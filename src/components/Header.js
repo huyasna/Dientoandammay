@@ -85,8 +85,10 @@ export default function Header() {
                             </a>
 
                         </li>
+                        <li className="header__navbar-item header__navbar-item--strong  header__navbar-item--separate"><Link className="header__navbar-item-link" to="/dang-ky">Đăng ký</Link></li>
+                        <li className="header__navbar-item header__navbar-item--strong"><Link className="header__navbar-item-link" to="/dang-nhap">Đăng nhập</Link></li>
 
-                        <li className="header__navbar-item header__navbar-user">
+                        {/* <li className="header__navbar-item header__navbar-user">
                             <img src="./assets/img/avatar-user/avatar1.jpg" alt="" className="header__navbar-user-img" />
                             <span className="header__navbar-user-name">Na Huy</span>
 
@@ -99,7 +101,7 @@ export default function Header() {
                                     <a href="">Đăng xuất</a>
                                 </li>
                             </ul>
-                        </li>
+                        </li> */}
                     </ul>
                 </nav>
 
