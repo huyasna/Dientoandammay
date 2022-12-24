@@ -5,11 +5,13 @@ import pymongo
 import json
 import pandas as pd
 from bson import ObjectId, json_util
+from flask_cors import CORS, cross_origin
 
 from recommend import get_recommendations
 
 
 app = Flask(__name__)
+CORS(app)
 
 try:
     app.config["MONGO_URI"] = "mongodb+srv://ltnhan:thanhnhan@cluster0.9mhwj.mongodb.net/Movies"
