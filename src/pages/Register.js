@@ -1,10 +1,11 @@
 import React from "react";
-import { Link } from 'react-router-dom';
+import { Link, redirect } from 'react-router-dom';
+import axios from "axios";
 
 export default function Register() {
     return (
         <div className="app">
-            <form action="">
+            <form action="http://localhost:80/register" method="POST">
                 <div class="registration-form">
                     <h1>Register</h1>
                     <p>Please fill in this form to create an account.</p>

@@ -2,12 +2,17 @@ import React, { useState, useEffect } from "react";
 import RecommendMovieCards from "../components/RecommendedMovieCards";
 import { useParams } from 'react-router-dom';
 import axios from "axios";
+import ls from 'local-storage'
 
 export default function MovieDetail() {
     const { movieId } = useParams();
 
     function rateMovie(e) {
-        console.log(e.target.value);
+        axios.post("http://localhost:80/vote", {
+            userId: ls("userId"),
+            movieId: movieId,
+            rating: e.target.value
+        })
     }
 
     const [movie, setMovie] = useState({});

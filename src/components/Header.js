@@ -2,12 +2,17 @@ import React from "react";
 import { Link } from 'react-router-dom';
 import TextField from '@mui/material/TextField';
 import { Autocomplete } from '@mui/material';
+import ls from 'local-storage'
 
 export default function Header() {
     const suggestions = ["a", "b", "c", "d"];
 
     function handleChange() {
         console.log("something changed");
+    }
+
+    function logout() {
+        ls.clear()
     }
 
     return (
@@ -85,23 +90,30 @@ export default function Header() {
                             </a>
 
                         </li>
-                        <li className="header__navbar-item header__navbar-item--strong  header__navbar-item--separate"><Link className="header__navbar-item-link" to="/dang-ky">Đăng ký</Link></li>
-                        <li className="header__navbar-item header__navbar-item--strong"><Link className="header__navbar-item-link" to="/dang-nhap">Đăng nhập</Link></li>
 
-                        {/* <li className="header__navbar-item header__navbar-user">
-                            <img src="./assets/img/avatar-user/avatar1.jpg" alt="" className="header__navbar-user-img" />
-                            <span className="header__navbar-user-name">Na Huy</span>
+                        {ls("userId") === null &&
+                            <>
+                                <li className="header__navbar-item header__navbar-item--strong  header__navbar-item--separate"><Link className="header__navbar-item-link" to="/dang-ky">Đăng ký</Link></li>
+                                <li className="header__navbar-item header__navbar-item--strong"><Link className="header__navbar-item-link" to="/dang-nhap">Đăng nhập</Link></li>
+                            </>
+                        }
 
-                            <ul className="header__navbar-user-menu">
-                                <li className="header__navbar-user-item">
-                                    <a href="">Tài khoản của tôi</a>
-                                </li>
+                        {ls("userId") !== null &&
+                            <li className="header__navbar-item header__navbar-user">
+                                <img src="./assets/img/avatar-user/avatar1.jpg" alt="" className="header__navbar-user-img" />
+                                <span className="header__navbar-user-name">{ls("userName")}</span>
 
-                                <li className="header__navbar-user-item header__navbar-user-item--separate">
-                                    <a href="">Đăng xuất</a>
-                                </li>
-                            </ul>
-                        </li> */}
+                                <ul className="header__navbar-user-menu">
+                                    <li className="header__navbar-user-item">
+                                        <a href="">Tài khoản của tôi</a>
+                                    </li>
+
+                                    <li className="header__navbar-user-item header__navbar-user-item--separate" onClick={logout}>
+                                        <a href="">Đăng xuất</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        }
                     </ul>
                 </nav>
 

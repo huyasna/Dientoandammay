@@ -1,9 +1,26 @@
 import React from "react";
+import axios from "axios";
+import ls from "local-storage"
+import { useNavigate } from "react-router-dom";
+
 
 export default function Login() {
+    let navigate = useNavigate();
+    async function handleSubmit(e) {
+        e.preventDefault()
+        const response = await axios.post("http://localhost:80/login", {
+            email: document.querySelector("#email").value,
+            password: document.querySelector("#psw").value
+        })
+        if (response.status === 200) {
+            ls('userId', response.data.userId);
+            ls('username', response.data.userName);
+            navigate("/")
+        }
+    }
     return (
         <div className="app">
-            <form action="">
+            <form action="http://localhost:80/login" method="POST" onSubmit={handleSubmit}>
                 <div class="registration-form">
                     <h1>Login</h1>
                     <hr />

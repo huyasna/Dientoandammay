@@ -7,7 +7,7 @@ const MovieCards = () => {
 
   useEffect(() => {
     async function fetchData() {
-      const response = await axios.get("http://127.0.0.1/movies/home");
+      const response = await axios.get("http://127.0.0.1/movies/recommend");
       setMovies(response.data);
     }
     fetchData();
@@ -16,9 +16,9 @@ const MovieCards = () => {
   return (
     <div className="home-movie">
       <div className="row sm-gutter">
-        {movies.map((movie) =>
-          <MovieCard movie={movie} key={movie.id} />
-        )}
+        {movies.map((movie) => {
+          return <MovieCard movie={movie} key={movie.id} />
+        })}
       </div>
     </div>
   )
