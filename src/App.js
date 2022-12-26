@@ -11,11 +11,13 @@ import {
 } from "react-router-dom";
 import Register from './pages/Register';
 import Login from './pages/Login';
+import ScrollToTop from './components/ScrollToTop';
 
 
 export default function App() {
   return (
     <Router>
+      <ScrollToTop />
       <Header />
 
       <Routes>

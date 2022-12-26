@@ -35,7 +35,7 @@ export default function Home(props) {
                             <div className="home-filter hide-on-mobile-tablet">
                                 <span className="home-filter__label">Sắp xếp theo</span>
                                 <button className="home-filter__btn btn">Phổ biến</button>
-                                <button className="home-filter__btn btn btn--primary">Mới nhất</button>
+                                <button className="home-filter__btn btn btn--primary">Đề xuất</button>
                                 <button className="home-filter__btn btn">Điểm đánh giá</button>
 
                                 <div className="home-filter__page">
