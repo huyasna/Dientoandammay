@@ -6,6 +6,7 @@ import json
 import pandas as pd
 from bson import ObjectId, json_util
 from flask_cors import CORS, cross_origin
+import urllib.request
 
 from recommend import get_recommendations
 
@@ -21,9 +22,8 @@ except:
     print("ERROR - Cannot connect to db")
 
 # read csv files
-# movies_metadata = pd.read_csv('./assets/small_movies_metadata.csv')
-# cosine_sim = pd.read_csv('./assets/consine_sim.csv', sep=',', header=None)
-# titles = movies_metadata['title']
+movies_metadata = pd.read_csv('./assets/small_movies_metadata.csv')
+titles = movies_metadata['title']
 
 
 # Get movies in home screen, Example:
@@ -105,15 +105,19 @@ def searchMovies():
         )
 
 
-# Get movie recommendations, Example: localhost:80/movies/recommend/?id=2
-@app.route('/movies/recommend/', methods=['GET'])
+# Get movie recommendations, Example: localhost:80/movies/recommend?id=1
+@app.route('/movies/recommend', methods=['GET'])
 def getMovieRecommendations():
     try:
         id = request.args.get('id', default=1, type=int)
-
+        recommendations = get_recommendations(id)
+        query = {"id": {"$in": recommendations['movieId'].to_list()}}
+        dbResponse = db.movie_metadatas.find(query).limit(20)
+        # result = movies_metadata[movies_metadata["id"].isin(recommendations['movieId'])].head(20)
+        
         return Response(
-            response=get_recommendations(
-                id, cosine_sim, titles).head(10).to_json(),
+            # response=result.to_json(orient='records'),
+            response=json_util.dumps(dbResponse),
             status=200,
             mimetype='application/json'
         )
@@ -135,13 +139,13 @@ def getMovieRecommendations():
 #     "email": "third_user@gmail.com",
 #     "password": "123123123"
 # }
-@app.route('/users', methods=['POST'])
+@app.route('/register', methods=['POST'])
 def saveUser():
     try:
-        data = request.json
-        userName = data['userName']
+        data = request.form
+        userName = data['username']
         email = data['email']
-        password = data['password']
+        password = data['psw']
         # if (userName is None or email is None or password is None):
         #     return Response(
         #         response=json_util.dumps(
@@ -149,7 +153,7 @@ def saveUser():
         #         status=500,
         #         mimetype="application/json")
         # else:
-        existingUser = db.users.find({"email": email})
+        existingUser = db.users.find_one({"email": email})
 
         if (existingUser):
             raise Exception("User already exits")
@@ -183,14 +187,15 @@ def saveUser():
 #     "email": "third_user@gmail.com",
 #     "password": "123123123"
 # }
-@app.route("/users", methods=["GET"])
+@app.route("/login", methods=["POST"])
 def getUser():
     try:
-        date = request.json
-        email = request.json["email"]
-        password = request.json["password"]
+        print(request.form)
+        data = request.json
+        email = data["email"]
+        password = data["password"]
 
-        existingUser = list(db.users.find({"email": email}))[0]
+        existingUser = db.users.find_one({"email": email})
 
         if (existingUser["password"] != password):
             raise Exception("Password not match")
@@ -217,6 +222,61 @@ def getUser():
             mimetype="application/json"
         )
 
+
+@app.route('/vote', methods=['POST'])
+def vote():
+    try:
+        data = request.json
+        print(data)
+        userId = int(data["userId"])
+        movieId = int(data["movieId"])
+        rating = int(data["rating"])
+        dbResponse = db.ratings.insert_one({
+            "userId": userId,
+            "movieId": movieId,
+            "rating": rating
+        })
+        return Response(
+            response=json_util.dumps({"message": "voted successfully",
+                                      "id": f"{dbResponse.inserted_id}"}),
+            status=200,
+            mimetype="application/json"
+        )
+    except Exception as ex:
+        print("##########################################")
+        print(ex)
+
+        return Response(
+            response=json.dumps(
+                {"message": "Failed to update data"}),
+            status=500,
+            mimetype="application/json"
+        )
+
+
+@app.route('/update', methods=['POST'])
+def updateData():
+    try:
+        data = request.json
+        if data['key'] == "cloudComputing":
+            urllib.request.urlretrieve("https://dlsgen2account418.dfs.core.windows.net/filesystem/data/ratings.csv?sv=2021-06-08&ss=bfqt&srt=sco&sp=rwdlacupyx&se=2022-12-26T21:57:45Z&st=2022-12-18T13:57:45Z&sip=0.0.0.0-255.255.255.255&spr=https,http&sig=iIpznkkWLsp6NQ9K19xniuv0WiNUDZBj%2Fg3Tsx%2B7uQ8%3D", "./assets/ratings.csv")
+            urllib.request.urlretrieve("https://dlsgen2account418.dfs.core.windows.net/filesystem/result/similarities.csv?sv=2021-06-08&ss=bfqt&srt=sco&sp=rwdlacupyx&se=2022-12-26T21:57:45Z&st=2022-12-18T13:57:45Z&sip=0.0.0.0-255.255.255.255&spr=https,http&sig=iIpznkkWLsp6NQ9K19xniuv0WiNUDZBj%2Fg3Tsx%2B7uQ8%3D", "./assets/similarities.csv")
+        
+        return Response(
+            response=json_util.dumps({"message": "Updated"}),
+            status=200,
+            mimetype="application/json"
+        )
+    except Exception as ex:
+        print("##########################################")
+        print(ex)
+
+        return Response(
+            response=json.dumps(
+                {"message": "Failed to update data"}),
+            status=500,
+            mimetype="application/json"
+        )
 
 # run app
 if __name__ == "__main__":
